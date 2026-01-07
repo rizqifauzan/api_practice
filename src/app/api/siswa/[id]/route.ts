@@ -35,7 +35,7 @@ export async function GET(
   } catch (error) {
     console.error('Get siswa error:', error);
     return NextResponse.json<ApiResponse<null>>(
-      { success: false, error: 'Terjadi kesalahan server' },
+      { success: false, error: 'Terjadi kesalahan server saat mengambil data siswa. Silakan coba lagi nanti.' },
       { status: 500 }
     );
   }
@@ -53,8 +53,9 @@ export async function PUT(
     // Validate input
     const validation = validateInput(updateSiswaSchema, body);
     if (!validation.success) {
+      const errorMessages = Object.values(validation.errors || {}).join(', ');
       return NextResponse.json<ApiResponse<null>>(
-        { success: false, error: 'Validasi gagal' },
+        { success: false, error: `Validasi gagal: ${errorMessages}` },
         { status: 400 }
       );
     }
@@ -108,7 +109,7 @@ export async function PUT(
     if (error) {
       console.error('Update siswa error:', error);
       return NextResponse.json<ApiResponse<null>>(
-        { success: false, error: 'Gagal mengupdate siswa' },
+        { success: false, error: 'Gagal mengupdate data siswa di database. Silakan coba lagi nanti.' },
         { status: 500 }
       );
     }
@@ -124,7 +125,7 @@ export async function PUT(
   } catch (error) {
     console.error('Update siswa error:', error);
     return NextResponse.json<ApiResponse<null>>(
-      { success: false, error: 'Terjadi kesalahan server' },
+      { success: false, error: 'Terjadi kesalahan server saat mengupdate data siswa. Silakan coba lagi nanti.' },
       { status: 500 }
     );
   }
@@ -161,7 +162,7 @@ export async function DELETE(
     if (error) {
       console.error('Delete siswa error:', error);
       return NextResponse.json<ApiResponse<null>>(
-        { success: false, error: 'Gagal menghapus siswa' },
+        { success: false, error: 'Gagal menghapus data siswa dari database. Silakan coba lagi nanti.' },
         { status: 500 }
       );
     }
@@ -176,7 +177,7 @@ export async function DELETE(
   } catch (error) {
     console.error('Delete siswa error:', error);
     return NextResponse.json<ApiResponse<null>>(
-      { success: false, error: 'Terjadi kesalahan server' },
+      { success: false, error: 'Terjadi kesalahan server saat menghapus data siswa. Silakan coba lagi nanti.' },
       { status: 500 }
     );
   }

@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
     if (error) {
       console.error('Get siswa error:', error);
       return NextResponse.json<ApiResponse<null>>(
-        { success: false, error: 'Gagal mengambil data siswa' },
+        { success: false, error: 'Gagal mengambil data siswa dari database. Silakan coba lagi nanti.' },
         { status: 500 }
       );
     }
@@ -76,7 +76,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Get siswa error:', error);
     return NextResponse.json<ApiResponse<null>>(
-      { success: false, error: 'Terjadi kesalahan server' },
+      { success: false, error: 'Terjadi kesalahan server saat mengambil data siswa. Silakan coba lagi nanti.' },
       { status: 500 }
     );
   }
@@ -90,8 +90,9 @@ export async function POST(request: NextRequest) {
     // Validate input
     const validation = validateInput(createSiswaSchema, body);
     if (!validation.success) {
+      const errorMessages = Object.values(validation.errors || {}).join(', ');
       return NextResponse.json<ApiResponse<null>>(
-        { success: false, error: 'Validasi gagal' },
+        { success: false, error: `Validasi gagal: ${errorMessages}` },
         { status: 400 }
       );
     }
@@ -131,7 +132,7 @@ export async function POST(request: NextRequest) {
     if (error) {
       console.error('Create siswa error:', error);
       return NextResponse.json<ApiResponse<null>>(
-        { success: false, error: 'Gagal menambahkan siswa' },
+        { success: false, error: 'Gagal menambahkan siswa ke database. Silakan coba lagi nanti.' },
         { status: 500 }
       );
     }
@@ -147,7 +148,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Create siswa error:', error);
     return NextResponse.json<ApiResponse<null>>(
-      { success: false, error: 'Terjadi kesalahan server' },
+      { success: false, error: 'Terjadi kesalahan server saat menambahkan siswa. Silakan coba lagi nanti.' },
       { status: 500 }
     );
   }

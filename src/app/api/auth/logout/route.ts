@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Logout error:', error);
     return NextResponse.json<ApiResponse<null>>(
-      { success: false, error: 'Terjadi kesalahan server' },
+      { success: false, error: 'Terjadi kesalahan server saat memproses logout. Silakan coba lagi nanti.' },
       { status: 500 }
     );
   }

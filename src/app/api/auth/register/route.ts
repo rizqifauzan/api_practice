@@ -15,8 +15,9 @@ export async function POST(request: NextRequest) {
     // Validate input
     const validation = validateInput(registerSchema, body);
     if (!validation.success) {
+      const errorMessages = Object.values(validation.errors || {}).join(', ');
       return NextResponse.json<ApiResponse<null>>(
-        { success: false, error: 'Validasi gagal' },
+        { success: false, error: `Validasi gagal: ${errorMessages}` },
         { status: 400 }
       );
     }
@@ -52,8 +53,9 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
+      console.error('Register database error:', error);
       return NextResponse.json<ApiResponse<null>>(
-        { success: false, error: 'Gagal membuat user' },
+        { success: false, error: 'Gagal membuat akun baru. Silakan coba lagi nanti.' },
         { status: 500 }
       );
     }
@@ -72,7 +74,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Register error:', error);
     return NextResponse.json<ApiResponse<null>>(
-      { success: false, error: 'Terjadi kesalahan server' },
+      { success: false, error: 'Terjadi kesalahan server saat memproses registrasi. Silakan coba lagi nanti.' },
       { status: 500 }
     );
   }

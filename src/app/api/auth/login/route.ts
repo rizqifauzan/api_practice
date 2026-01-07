@@ -14,8 +14,9 @@ export async function POST(request: NextRequest) {
     // Validate input
     const validation = validateInput(loginSchema, body);
     if (!validation.success) {
+      const errorMessages = Object.values(validation.errors || {}).join(', ');
       return NextResponse.json<ApiResponse<null>>(
-        { success: false, error: 'Validasi gagal' },
+        { success: false, error: `Validasi gagal: ${errorMessages}` },
         { status: 400 }
       );
     }
@@ -69,7 +70,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json<ApiResponse<null>>(
-      { success: false, error: 'Terjadi kesalahan server' },
+      { success: false, error: 'Terjadi kesalahan server saat memproses login. Silakan coba lagi nanti.' },
       { status: 500 }
     );
   }

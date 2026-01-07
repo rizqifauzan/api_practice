@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
 
     if (!userId) {
       return NextResponse.json<ApiResponse<null>>(
-        { success: false, error: 'Unauthorized' },
+        { success: false, error: 'Anda tidak memiliki akses. Silakan login kembali.' },
         { status: 401 }
       );
     }
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
   } catch (error) {
     console.error('Get user error:', error);
     return NextResponse.json<ApiResponse<null>>(
-      { success: false, error: 'Terjadi kesalahan server' },
+      { success: false, error: 'Terjadi kesalahan server saat mengambil data user. Silakan coba lagi nanti.' },
       { status: 500 }
     );
   }
