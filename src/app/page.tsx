@@ -265,7 +265,7 @@ export default function Home() {
                 </Button>
               </Link>
               <Link href="/api-docs">
-                <Button size="lg" variant="outline" className="w-full sm:w-auto border-white text-white hover:bg-white/10 text-lg px-8 py-6">
+                <Button size="lg" variant="outline" className="w-full sm:w-auto border-white text-white hover:bg-white hover:text-blue-600 text-lg px-8 py-6">
                   Pelajari Lebih Lanjut
                 </Button>
               </Link>
