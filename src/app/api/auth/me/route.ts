@@ -1,17 +1,34 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase';
 import { ApiResponse, User } from '@/lib/types';
+import { verifyToken, extractTokenFromHeader } from '@/lib/auth';
 
 export async function GET(request: NextRequest) {
   try {
-    // Get user ID from headers (set by middleware)
-    const userId = request.headers.get('x-user-id');
-
+    // Fallback: Get user ID from headers (set by middleware) or verify token directly
+    let userId = request.headers.get('x-user-id');
+    
+    // If x-user-id is not available, verify token directly (fallback for production)
     if (!userId) {
-      return NextResponse.json<ApiResponse<null>>(
-        { success: false, error: 'Anda tidak memiliki akses. Silakan login kembali.' },
-        { status: 401 }
-      );
+      const authHeader = request.headers.get('authorization');
+      const token = extractTokenFromHeader(authHeader);
+      
+      if (!token) {
+        return NextResponse.json<ApiResponse<null>>(
+          { success: false, error: 'Anda tidak memiliki akses. Silakan login kembali.' },
+          { status: 401 }
+        );
+      }
+      
+      const payload = await verifyToken(token);
+      if (!payload) {
+        return NextResponse.json<ApiResponse<null>>(
+          { success: false, error: 'Token tidak valid. Silakan login kembali.' },
+          { status: 401 }
+        );
+      }
+      
+      userId = payload.userId;
     }
 
     // Get user data

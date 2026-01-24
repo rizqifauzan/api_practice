@@ -3,10 +3,36 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { createSiswaSchema } from '@/lib/validation';
 import { validateInput } from '@/lib/validation';
 import { ApiResponse, Siswa, PaginatedResponse, PaginationParams } from '@/lib/types';
+import { verifyToken, extractTokenFromHeader } from '@/lib/auth';
+
+// Helper function to verify authentication
+async function authenticateRequest(request: NextRequest) {
+  const authHeader = request.headers.get('authorization');
+  const token = extractTokenFromHeader(authHeader);
+
+  if (!token) {
+    return { success: false, error: 'Unauthorized - Token tidak ditemukan' };
+  }
+
+  const payload = await verifyToken(token);
+  if (!payload) {
+    return { success: false, error: 'Unauthorized - Token tidak valid' };
+  }
+
+  return { success: true, payload };
+}
 
 // GET - Get all students with pagination, search, filter, and sorting
 export async function GET(request: NextRequest) {
   try {
+    // Authenticate request (fallback if middleware doesn't set headers)
+    const authResult = await authenticateRequest(request);
+    if (!authResult.success) {
+      return NextResponse.json<ApiResponse<null>>(
+        { success: false, error: authResult.error },
+        { status: 401 }
+      );
+    }
     const searchParams = request.nextUrl.searchParams;
     
     const page = parseInt(searchParams.get('page') || '1');
@@ -85,6 +111,15 @@ export async function GET(request: NextRequest) {
 // POST - Create new student
 export async function POST(request: NextRequest) {
   try {
+    // Authenticate request (fallback if middleware doesn't set headers)
+    const authResult = await authenticateRequest(request);
+    if (!authResult.success) {
+      return NextResponse.json<ApiResponse<null>>(
+        { success: false, error: authResult.error },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
 
     // Validate input

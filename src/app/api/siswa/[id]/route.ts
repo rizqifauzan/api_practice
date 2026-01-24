@@ -3,6 +3,24 @@ import { supabaseAdmin } from '@/lib/supabase';
 import { updateSiswaSchema } from '@/lib/validation';
 import { validateInput } from '@/lib/validation';
 import { ApiResponse, Siswa } from '@/lib/types';
+import { verifyToken, extractTokenFromHeader } from '@/lib/auth';
+
+// Helper function to verify authentication
+async function authenticateRequest(request: NextRequest) {
+  const authHeader = request.headers.get('authorization');
+  const token = extractTokenFromHeader(authHeader);
+
+  if (!token) {
+    return { success: false, error: 'Unauthorized - Token tidak ditemukan' };
+  }
+
+  const payload = await verifyToken(token);
+  if (!payload) {
+    return { success: false, error: 'Unauthorized - Token tidak valid' };
+  }
+
+  return { success: true, payload };
+}
 
 // GET - Get student by ID
 export async function GET(
@@ -10,6 +28,15 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Authenticate request (fallback if middleware doesn't set headers)
+    const authResult = await authenticateRequest(request);
+    if (!authResult.success) {
+      return NextResponse.json<ApiResponse<null>>(
+        { success: false, error: authResult.error },
+        { status: 401 }
+      );
+    }
+
     const { id } = params;
 
     const { data: siswa, error } = await supabaseAdmin
@@ -47,6 +74,15 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Authenticate request (fallback if middleware doesn't set headers)
+    const authResult = await authenticateRequest(request);
+    if (!authResult.success) {
+      return NextResponse.json<ApiResponse<null>>(
+        { success: false, error: authResult.error },
+        { status: 401 }
+      );
+    }
+
     const { id } = params;
     const body = await request.json();
 
@@ -137,6 +173,15 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Authenticate request (fallback if middleware doesn't set headers)
+    const authResult = await authenticateRequest(request);
+    if (!authResult.success) {
+      return NextResponse.json<ApiResponse<null>>(
+        { success: false, error: authResult.error },
+        { status: 401 }
+      );
+    }
+
     const { id } = params;
 
     // Cek apakah siswa ada

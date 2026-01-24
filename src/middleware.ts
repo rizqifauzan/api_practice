@@ -3,7 +3,7 @@ import type { NextRequest } from 'next/server';
 import { verifyToken, extractTokenFromHeader } from '@/lib/auth';
 
 // Routes yang tidak memerlukan authentication
-const publicRoutes = ['/', '/login', '/register', '/api-docs', '/api/auth/login', '/api/auth/register'];
+const publicRoutes = ['/', '/login', '/register', '/api-docs', '/api/auth/login', '/api/auth/register', '/api/auth/logout'];
 const apiRoutes = ['/api/'];
 
 export async function middleware(request: NextRequest) {
