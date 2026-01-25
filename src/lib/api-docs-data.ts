@@ -28,6 +28,9 @@ export interface ApiEndpoint {
   };
 }
 
+// Postman Collection Download Link
+const postmanCollectionUrl = '/postman-collection.json';
+
 export const apiEndpoints: ApiEndpoint[] = [
   // Authentication Endpoints
   {

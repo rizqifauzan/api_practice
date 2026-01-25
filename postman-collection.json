@@ -1,0 +1,782 @@
+{
+  "info": {
+    "name": "API Siswa Management",
+    "description": "API Collection untuk testing endpoint siswa management",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "2.1.0"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "https://api.rizqifauzan.com",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Test User\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Registrasi user baru. Password harus mengandung minimal 1 huruf kapital, 1 huruf kecil, dan 1 angka."
+          },
+          "response": []
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const jsonData = pm.response.json();",
+                  "if (jsonData.success && jsonData.data.token) {",
+                  "  pm.collectionVariables.set('token', jsonData.data.token);",
+                  "  pm.collectionVariables.set('userId', jsonData.data.user.id);",
+                  "  console.log('Token saved:', jsonData.data.token);",
+                  "}"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Login untuk mendapatkan token. Token akan disimpan secara otomatis ke collection variables."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Current User",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Mendapatkan data user yang sedang login. Membutuhkan token valid."
+          },
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/logout",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "logout"]
+            },
+            "description": "Logout user."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Siswa",
+      "item": [
+        {
+          "name": "Get All Siswa",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/siswa?page=1&limit=10",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "siswa"],
+              "query": [
+                {
+                  "key": "page",
+                  "value": "1",
+                  "description": "Nomor halaman"
+                },
+                {
+                  "key": "limit",
+                  "value": "10",
+                  "description": "Jumlah data per halaman"
+                }
+              ]
+            },
+            "description": "Mendapatkan semua data siswa dengan pagination."
+          },
+          "response": []
+        },
+        {
+          "name": "Search Siswa",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/siswa?search=Fauziah",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "siswa"],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "Fauziah",
+                  "description": "Kata kunci untuk mencari nama, NIS, atau email"
+                }
+              ]
+            },
+            "description": "Mencari siswa berdasarkan nama, NIS, atau email."
+          },
+          "response": []
+        },
+        {
+          "name": "Filter Siswa by Kelas",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/siswa?kelas=X-IPA-2",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "siswa"],
+              "query": [
+                {
+                  "key": "kelas",
+                  "value": "X-IPA-2",
+                  "description": "Filter berdasarkan kelas"
+                }
+              ]
+            },
+            "description": "Filter siswa berdasarkan kelas."
+          },
+          "response": []
+        },
+        {
+          "name": "Filter Siswa by Jurusan",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/siswa?jurusan=IPA",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "siswa"],
+              "query": [
+                {
+                  "key": "jurusan",
+                  "value": "IPA",
+                  "description": "Filter berdasarkan jurusan"
+                }
+              ]
+            },
+            "description": "Filter siswa berdasarkan jurusan."
+          },
+          "response": []
+        },
+        {
+          "name": "Sort Siswa",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/siswa?sortBy=nama&sortOrder=asc",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "siswa"],
+              "query": [
+                {
+                  "key": "sortBy",
+                  "value": "nama",
+                  "description": "Field untuk sorting (nama, nis, kelas, jurusan, created_at, updated_at)"
+                },
+                {
+                  "key": "sortOrder",
+                  "value": "asc",
+                  "description": "Urutan: asc atau desc"
+                }
+              ]
+            },
+            "description": "Sorting data siswa."
+          },
+          "response": []
+        },
+        {
+          "name": "Create Siswa",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nis\": \"12345\",\n  \"nama\": \"John Doe\",\n  \"kelas\": \"X-IPA-1\",\n  \"jurusan\": \"IPA\",\n  \"email\": \"john@example.com\",\n  \"telepon\": \"08123456789\",\n  \"alamat\": \"Jl. Contoh No. 123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/siswa",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "siswa"]
+            },
+            "description": "Menambahkan siswa baru. Format kelas harus sesuai pattern: X-IPA-1, XI-IPA-2, dll."
+          },
+          "response": []
+        },
+        {
+          "name": "Get Siswa by ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/siswa/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "siswa", "{{userId}}"],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}",
+                  "description": "Ganti dengan ID siswa yang valid"
+                }
+              ]
+            },
+            "description": "Mendapatkan data siswa berdasarkan ID. Ganti {{userId}} dengan ID siswa yang valid."
+          },
+          "response": []
+        },
+        {
+          "name": "Update Siswa",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"John Doe Updated\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/siswa/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "siswa", "{{userId}}"],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}",
+                  "description": "Ganti dengan ID siswa yang valid"
+                }
+              ]
+            },
+            "description": "Mengupdate data siswa. Ganti {{userId}} dengan ID siswa yang valid."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Siswa",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/siswa/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "siswa", "{{userId}}"],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}",
+                  "description": "Ganti dengan ID siswa yang valid"
+                }
+              ]
+            },
+            "description": "Menghapus data siswa. Ganti {{userId}} dengan ID siswa yang valid."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Error Handling Tests",
+      "item": [
+        {
+          "name": "Test: Register with existing email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Test User Two\",\n  \"email\": \"test@example.com\",\n  \"password\": \"Password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "register"]
+            },
+            "description": "Test registrasi dengan email yang sudah ada. Expected: 409 Conflict"
+          },
+          "response": []
+        },
+        {
+          "name": "Test: Login with wrong email",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"wrong@example.com\",\n  \"password\": \"Password123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Test login dengan email salah. Expected: 401 Unauthorized"
+          },
+          "response": []
+        },
+        {
+          "name": "Test: Login with wrong password",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"test@example.com\",\n  \"password\": \"WrongPassword123\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "login"]
+            },
+            "description": "Test login dengan password salah. Expected: 401 Unauthorized"
+          },
+          "response": []
+        },
+        {
+          "name": "Test: Get Current User without token",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "auth", "me"]
+            },
+            "description": "Test GET /api/auth/me tanpa token. Expected: 401 Unauthorized"
+          },
+          "response": []
+        },
+        {
+          "name": "Test: Get Siswa by invalid ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/siswa/00000000-0000-0000-0000-000000000000",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "siswa", "00000000-0000-0000-0000-000000000000"]
+            },
+            "description": "Test GET siswa dengan ID tidak ada. Expected: 404 Not Found"
+          },
+          "response": []
+        },
+        {
+          "name": "Test: Create Siswa with duplicate NIS",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nis\": \"1030833103219\",\n  \"nama\": \"Test Duplicate\",\n  \"kelas\": \"X-IPA-1\",\n  \"jurusan\": \"IPA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/siswa",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "siswa"]
+            },
+            "description": "Test create siswa dengan NIS yang sudah ada. Expected: 409 Conflict"
+          },
+          "response": []
+        },
+        {
+          "name": "Test: Create Siswa with invalid kelas format",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nis\": \"99998\",\n  \"nama\": \"Test Siswa\",\n  \"kelas\": \"XIPA1\",\n  \"jurusan\": \"IPA\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/siswa",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "siswa"]
+            },
+            "description": "Test create siswa dengan format kelas tidak valid. Expected: 400 Bad Request"
+          },
+          "response": []
+        },
+        {
+          "name": "Test: Update Siswa with invalid ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PUT",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"Test Update\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/siswa/00000000-0000-0000-0000-000000000000",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "siswa", "00000000-0000-0000-0000-000000000000"]
+            },
+            "description": "Test update siswa dengan ID tidak ada. Expected: 404 Not Found"
+          },
+          "response": []
+        },
+        {
+          "name": "Test: Delete Siswa with invalid ID",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/api/siswa/00000000-0000-0000-0000-000000000000",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "siswa", "00000000-0000-0000-0000-000000000000"]
+            },
+            "description": "Test delete siswa dengan ID tidak ada. Expected: 404 Not Found"
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}

@@ -8,6 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion';
 import { Badge } from '@/components/ui/badge';
 import { apiEndpoints, apiCategories, ApiEndpoint } from '@/lib/api-docs-data';
+import { Download, ExternalLink, BookOpen, CheckCircle, Code, Zap, Shield } from 'lucide-react';
 
 export default function ApiDocsPage() {
   const [selectedEndpoint, setSelectedEndpoint] = useState<ApiEndpoint | null>(null);
@@ -109,11 +110,318 @@ export default function ApiDocsPage() {
           </div>
         </div>
 
-        <Tabs defaultValue="endpoints" className="space-y-6">
-          <TabsList className="grid w-full max-w-md grid-cols-2">
+        <Tabs defaultValue="postman" className="space-y-6">
+          <TabsList className="grid w-full max-w-lg grid-cols-3">
+            <TabsTrigger value="postman">Postman</TabsTrigger>
             <TabsTrigger value="endpoints">Endpoints</TabsTrigger>
             <TabsTrigger value="examples">Examples</TabsTrigger>
           </TabsList>
+
+          <TabsContent value="postman" className="space-y-6">
+            {/* Postman Collection Download Section */}
+            <Card className="bg-gradient-to-r from-blue-500 to-purple-600 text-white border-0 shadow-lg">
+              <CardContent className="p-8">
+                <div className="flex flex-col lg:flex-row items-start justify-between gap-6">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-4">
+                      <div className="p-3 bg-white/20 rounded-lg">
+                        <Download className="w-8 h-8" />
+                      </div>
+                      <h2 className="text-3xl font-bold">Download Postman Collection</h2>
+                    </div>
+                    <p className="text-lg mb-6 text-blue-50 leading-relaxed">
+                      Download Postman collection untuk mencoba API automation test.
+                      Collection ini berisi semua endpoint API yang tersedia dengan
+                      contoh request dan response yang lengkap.
+                    </p>
+                    <div className="mb-6">
+                      <p className="text-base font-semibold mb-3 text-blue-100">
+                        Fitur Collection:
+                      </p>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4" />
+                          <span className="text-sm">Semua endpoint API (Auth & Siswa)</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4" />
+                          <span className="text-sm">Auto-save token setelah login</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4" />
+                          <span className="text-sm">Pagination, search, filter, sorting</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4" />
+                          <span className="text-sm">Error handling dan validation</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4" />
+                          <span className="text-sm">Collection variables</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle className="w-4 h-4" />
+                          <span className="text-sm">Automation test ready</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-3 min-w-[200px]">
+                    <Button
+                      asChild
+                      size="lg"
+                      className="bg-white text-blue-600 hover:bg-blue-50 shadow-md"
+                    >
+                      <a
+                        href="/postman-collection.json"
+                        download="api-siswa-management-collection.json"
+                      >
+                        <Download className="w-5 h-5 mr-2" />
+                        Download Collection
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* API Features */}
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <Card className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 bg-blue-100 rounded-lg">
+                    <Shield className="w-6 h-6 text-blue-600" />
+                  </div>
+                  <h3 className="text-xl font-bold">Authentication</h3>
+                </div>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li>• JWT-based authentication</li>
+                  <li>• Register & Login endpoints</li>
+                  <li>• Token management</li>
+                  <li>• Protected routes</li>
+                </ul>
+              </Card>
+              <Card className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 bg-green-100 rounded-lg">
+                    <Zap className="w-6 h-6 text-green-600" />
+                  </div>
+                  <h3 className="text-xl font-bold">CRUD Operations</h3>
+                </div>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li>• Create, Read, Update, Delete</li>
+                  <li>• Bulk operations</li>
+                  <li>• Validation & error handling</li>
+                  <li>• Data integrity</li>
+                </ul>
+              </Card>
+              <Card className="p-6">
+                <div className="flex items-center gap-3 mb-4">
+                  <div className="p-3 bg-purple-100 rounded-lg">
+                    <Code className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <h3 className="text-xl font-bold">Advanced Features</h3>
+                </div>
+                <ul className="space-y-2 text-sm text-gray-600">
+                  <li>• Pagination</li>
+                  <li>• Search & filter</li>
+                  <li>• Sorting</li>
+                  <li>• Response caching</li>
+                </ul>
+              </Card>
+            </div>
+
+            {/* Tutorial Section */}
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-2xl font-bold mb-6 flex items-center">
+                  <BookOpen className="w-6 h-6 mr-3" />
+                  Cara Menggunakan Postman Collection
+                </h3>
+                <div className="space-y-6">
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
+                      1
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg mb-2">Download dan Import Collection</h4>
+                      <p className="text-gray-600">
+                        Download Postman collection dan import ke Postman Desktop atau Web.
+                        Buka Postman, klik Import, dan pilih file JSON yang sudah didownload.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
+                      2
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg mb-2">Setup Environment Variables</h4>
+                      <p className="text-gray-600">
+                        Buat environment baru dengan variables: baseUrl (https://api.rizqifauzan.com),
+                        token (kosong), userId (kosong). Token akan diisi otomatis setelah login.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
+                      3
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg mb-2">Jalankan Request Login</h4>
+                      <p className="text-gray-600">
+                        Jalankan request login dengan email dan password yang valid.
+                        Token akan disimpan otomatis ke collection variables.
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex gap-4">
+                    <div className="flex-shrink-0 w-10 h-10 bg-blue-500 text-white rounded-full flex items-center justify-center font-bold text-lg">
+                      4
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-lg mb-2">Coba Endpoint Lainnya</h4>
+                      <p className="text-gray-600">
+                        Setelah login, coba endpoint lain seperti Get All Siswa, Create Siswa,
+                        Update Siswa, dan Delete Siswa. Semua endpoint menggunakan token yang sudah disimpan.
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Tutorial Links */}
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-2xl font-bold mb-6">Tutorial Lengkap</h3>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <Link
+                    href="/docs/tutorial-download-postman"
+                    className="block p-6 border rounded-lg hover:bg-gray-50 transition hover:shadow-md"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-blue-100 rounded-lg">
+                        <Download className="w-6 h-6 text-blue-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-lg text-blue-600 mb-2">
+                          Tutorial Download dan Import Postman Collection
+                        </h4>
+                        <p className="text-sm text-gray-600">
+                          Panduan lengkap cara download dan import Postman collection.
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                  <Link
+                    href="/docs/tutorial-automation-test-api"
+                    className="block p-6 border rounded-lg hover:bg-gray-50 transition hover:shadow-md"
+                  >
+                    <div className="flex items-start gap-4">
+                      <div className="p-3 bg-green-100 rounded-lg">
+                        <Zap className="w-6 h-6 text-green-600" />
+                      </div>
+                      <div>
+                        <h4 className="font-semibold text-lg text-blue-600 mb-2">
+                          Tutorial Automation Test API dengan Postman
+                        </h4>
+                        <p className="text-sm text-gray-600">
+                          Panduan lengkap cara membuat automation test dengan Postman.
+                        </p>
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* API Endpoints Summary */}
+            <Card>
+              <CardContent className="p-6">
+                <h3 className="text-2xl font-bold mb-6">API Endpoints</h3>
+                <div className="space-y-4">
+                  <div>
+                    <h4 className="font-semibold text-lg mb-3">Authentication</h4>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b">
+                            <th className="text-left py-2">Method</th>
+                            <th className="text-left py-2">Endpoint</th>
+                            <th className="text-left py-2">Description</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="border-b">
+                            <td className="py-2"><span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">POST</span></td>
+                            <td className="py-2 font-mono text-xs">/api/auth/register</td>
+                            <td className="py-2">Register user baru</td>
+                          </tr>
+                          <tr className="border-b">
+                            <td className="py-2"><span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">POST</span></td>
+                            <td className="py-2 font-mono text-xs">/api/auth/login</td>
+                            <td className="py-2">Login user</td>
+                          </tr>
+                          <tr className="border-b">
+                            <td className="py-2"><span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-bold">GET</span></td>
+                            <td className="py-2 font-mono text-xs">/api/auth/me</td>
+                            <td className="py-2">Get current user</td>
+                          </tr>
+                          <tr>
+                            <td className="py-2"><span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">POST</span></td>
+                            <td className="py-2 font-mono text-xs">/api/auth/logout</td>
+                            <td className="py-2">Logout user</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                  <div>
+                    <h4 className="font-semibold text-lg mb-3">Siswa Management</h4>
+                    <div className="bg-gray-50 rounded-lg p-4">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b">
+                            <th className="text-left py-2">Method</th>
+                            <th className="text-left py-2">Endpoint</th>
+                            <th className="text-left py-2">Description</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr className="border-b">
+                            <td className="py-2"><span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-bold">GET</span></td>
+                            <td className="py-2 font-mono text-xs">/api/siswa</td>
+                            <td className="py-2">Get all siswa</td>
+                          </tr>
+                          <tr className="border-b">
+                            <td className="py-2"><span className="px-2 py-1 bg-green-100 text-green-700 rounded text-xs font-bold">POST</span></td>
+                            <td className="py-2 font-mono text-xs">/api/siswa</td>
+                            <td className="py-2">Create siswa baru</td>
+                          </tr>
+                          <tr className="border-b">
+                            <td className="py-2"><span className="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-bold">GET</span></td>
+                            <td className="py-2 font-mono text-xs">/api/siswa/[id]</td>
+                            <td className="py-2">Get siswa by ID</td>
+                          </tr>
+                          <tr className="border-b">
+                            <td className="py-2"><span className="px-2 py-1 bg-yellow-100 text-yellow-700 rounded text-xs font-bold">PUT</span></td>
+                            <td className="py-2 font-mono text-xs">/api/siswa/[id]</td>
+                            <td className="py-2">Update siswa</td>
+                          </tr>
+                          <tr>
+                            <td className="py-2"><span className="px-2 py-1 bg-red-100 text-red-700 rounded text-xs font-bold">DELETE</span></td>
+                            <td className="py-2 font-mono text-xs">/api/siswa/[id]</td>
+                            <td className="py-2">Delete siswa</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
           <TabsContent value="endpoints" className="space-y-6">
             {/* Categories */}
