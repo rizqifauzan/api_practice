@@ -110,11 +110,11 @@ export default function ApiDocsPage() {
           </div>
         </div>
 
-        <Tabs defaultValue="postman" className="space-y-6">
+        <Tabs defaultValue="endpoints" className="space-y-6">
           <TabsList className="grid w-full max-w-lg grid-cols-3">
-            <TabsTrigger value="postman">Postman</TabsTrigger>
             <TabsTrigger value="endpoints">Endpoints</TabsTrigger>
             <TabsTrigger value="examples">Examples</TabsTrigger>
+            <TabsTrigger value="postman">Postman</TabsTrigger>
           </TabsList>
 
           <TabsContent value="postman" className="space-y-6">
