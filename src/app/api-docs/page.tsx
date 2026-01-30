@@ -816,37 +816,39 @@ export default function ApiDocsPage() {
                   </Button>
                 </div>
 
-                {/* Bearer Token Input */}
-                <div className="mb-4">
-                  <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
-                    Bearer Token {selectedEndpoint.requiresAuth && <span className="text-red-500">*</span>}
-                  </label>
-                  <div className="relative">
-                    <input
-                      type="text"
-                      className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
-                      value={bearerToken}
-                      onChange={(e) => setBearerToken(e.target.value)}
-                      placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
-                    />
-                    {bearerToken && (
-                      <button
-                        type="button"
-                        onClick={() => setBearerToken('')}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
-                      >
-                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                        </svg>
-                      </button>
+                {/* Bearer Token Input - Hanya muncul untuk endpoint yang membutuhkan auth */}
+                {selectedEndpoint.requiresAuth && (
+                  <div className="mb-4">
+                    <label className="block text-sm font-medium mb-2 text-gray-700 dark:text-gray-300">
+                      Bearer Token <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <input
+                        type="text"
+                        className="w-full rounded-md border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 px-3 py-2 text-sm font-mono focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-10"
+                        value={bearerToken}
+                        onChange={(e) => setBearerToken(e.target.value)}
+                        placeholder="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+                      />
+                      {bearerToken && (
+                        <button
+                          type="button"
+                          onClick={() => setBearerToken('')}
+                          className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                          </svg>
+                        </button>
+                      )}
+                    </div>
+                    {!bearerToken && (
+                      <p className="text-xs text-red-500 mt-1">
+                        ⚠️ Endpoint ini memerlukan Bearer token untuk authentication
+                      </p>
                     )}
                   </div>
-                  {selectedEndpoint.requiresAuth && !bearerToken && (
-                    <p className="text-xs text-red-500 mt-1">
-                      ⚠️ Endpoint ini memerlukan Bearer token untuk authentication
-                    </p>
-                  )}
-                </div>
+                )}
 
                 {selectedEndpoint.request?.body && (
                   <div className="mb-4">
