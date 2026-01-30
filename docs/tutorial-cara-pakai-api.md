@@ -97,6 +97,22 @@ Setelah login, Anda bisa mengakses endpoint siswa:
 4. Klik tombol **"Send"**
 5. Response akan menampilkan siswa yang sudah diupdate
 
+#### Patch Siswa
+1. Pilih request **"Patch Siswa"**
+2. Ganti variable `userId` dengan ID siswa yang valid
+3. Isi body dengan field yang ingin diupdate (hanya field yang dikirim yang akan diupdate):
+   ```json
+   {
+     "nama": "John Doe Patched"
+   }
+   ```
+4. Klik tombol **"Send"**
+5. Response akan menampilkan siswa yang sudah diupdate
+
+**Catatan**: Perbedaan antara PUT dan PATCH:
+- **PUT**: Mengupdate semua field yang dikirim (field yang tidak dikirim akan di-set ke null)
+- **PATCH**: Hanya mengupdate field yang dikirim (field yang tidak dikirim tetap tidak berubah)
+
 #### Delete Siswa
 1. Pilih request **"Delete Siswa"**
 2. Ganti variable `userId` dengan ID siswa yang valid

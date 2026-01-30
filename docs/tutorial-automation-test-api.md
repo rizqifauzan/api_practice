@@ -111,6 +111,14 @@ Setelah token tersimpan, Anda bisa menjalankan request siswa:
 5. Klik tombol "Send"
 6. Gunakan collection variable `{{authToken}}` di Authorization header
 
+#### Patch Siswa
+1. Pilih request "Patch Siswa"
+2. Ganti variable `currentUserId` dengan ID siswa yang valid
+3. Klik tab "Body"
+4. Isi body JSON dengan field yang ingin diupdate (hanya field yang dikirim yang akan diupdate)
+5. Klik tombol "Send"
+6. Gunakan collection variable `{{authToken}}` di Authorization header
+
 #### Delete Siswa
 1. Pilih request "Delete Siswa"
 2. Ganti variable `currentUserId` dengan ID siswa yang valid
@@ -211,6 +219,7 @@ Tambahkan test case untuk error handling:
 Tambahkan test case untuk cleanup:
 - Create siswa baru
 - Update siswa
+- Patch siswa
 - Delete siswa yang baru dibuat
 
 ### 4. Report Generation
@@ -433,7 +442,32 @@ pm.sendRequest({
     }
 });
 
-// Test 5: Delete Siswa
+// Test 5: Patch Siswa
+pm.sendRequest({
+    url: `${baseUrl}/api/siswa/${currentUserId}`,
+    method: 'PATCH',
+    header: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${authToken}`
+    },
+    body: {
+        nama: 'Test Automation Patched'
+    },
+    function(err, res) {
+        if (err) {
+            console.error('Patch siswa error:', err);
+            throw err;
+        }
+        
+        const jsonData = res.json();
+        
+        if (jsonData.success) {
+            console.log('Siswa berhasil di-patch');
+        }
+    }
+});
+
+// Test 6: Delete Siswa
 pm.sendRequest({
     url: `${baseUrl}/api/siswa/${currentUserId}`,
     method: 'DELETE',

@@ -1,6 +1,6 @@
 export interface ApiEndpoint {
   id: string;
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  method: 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
   path: string;
   title: string;
   description: string;
@@ -638,6 +638,106 @@ public class ApiClient {
     },
   },
   {
+    id: 'siswa-patch',
+    method: 'PATCH',
+    path: '/api/siswa/[id]',
+    title: 'Patch Student',
+    description: 'Mengubah sebagian data siswa (partial update). Hanya field yang dikirim yang akan diupdate.',
+    requiresAuth: true,
+    request: {
+      headers: {
+        Authorization: { type: 'string', description: 'Bearer token', required: true },
+      },
+      params: {
+        id: { type: 'string', description: 'ID siswa (UUID)', required: true },
+      },
+      body: {
+        nama: { type: 'string', description: 'Nama lengkap siswa (opsional)', required: false },
+        nis: { type: 'string', description: 'Nomor Induk Siswa (opsional)', required: false },
+        kelas: { type: 'string', description: 'Kelas siswa (opsional)', required: false },
+        jurusan: { type: 'string', description: 'Jurusan siswa (opsional)', required: false },
+        email: { type: 'string', description: 'Email siswa (opsional)', required: false },
+        telepon: { type: 'string', description: 'Nomor telepon (opsional)', required: false },
+        alamat: { type: 'string', description: 'Alamat lengkap (opsional)', required: false },
+      },
+    },
+    response: {
+      success: {
+        success: { type: 'boolean', description: 'Status keberhasilan request' },
+        message: { type: 'string', description: 'Pesan sukses' },
+        data: { type: 'object', description: 'Data siswa yang diupdate' },
+      },
+    },
+    examples: {
+      request: {
+        curl: `curl -X PATCH https://your-domain.com/api/siswa/uuid-here \\
+  -H "Authorization: Bearer YOUR_TOKEN_HERE" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "nama": "Jane Patched"
+  }'`,
+        javascript: `fetch('https://your-domain.com/api/siswa/uuid-here', {
+  method: 'PATCH',
+  headers: {
+    'Authorization': 'Bearer YOUR_TOKEN_HERE',
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    nama: 'Jane Patched'
+  })
+}).then(res => res.json()).then(data => console.log(data));`,
+        java: `import io.restassured.RestAssured;
+import io.restassured.response.Response;
+import org.json.JSONObject;
+
+public class ApiClient {
+    public static void main(String[] args) {
+        String baseUrl = "https://your-domain.com";
+        String token = "YOUR_TOKEN_HERE";
+        String siswaId = "uuid-here";
+        
+        JSONObject requestBody = new JSONObject();
+        requestBody.put("nama", "Jane Patched");
+        
+        Response response = RestAssured.given()
+            .baseUri(baseUrl)
+            .header("Authorization", "Bearer " + token)
+            .header("Content-Type", "application/json")
+            .pathParam("id", siswaId)
+            .body(requestBody.toString())
+            .patch("/api/siswa/{id}");
+        
+        System.out.println("Status Code: " + response.getStatusCode());
+        System.out.println("Response: " + response.asString());
+    }
+}`,
+      },
+      response: {
+        success: `{
+  "success": true,
+  "message": "Siswa berhasil diupdate",
+  "data": {
+    "id": "uuid-here",
+    "nama": "Jane Patched",
+    "nis": "12346",
+    "kelas": "X-IPA-1",
+    "jurusan": "IPA",
+    "email": "jane.smith@example.com",
+    "telepon": "+628123456789",
+    "alamat": "Jl. Contoh No. 2",
+    "created_by": "user@example.com",
+    "created_at": "2024-01-01T00:00:00Z",
+    "updated_at": "2024-01-01T02:00:00Z"
+  }
+}`,
+        error: `{
+  "success": false,
+  "error": "Siswa tidak ditemukan"
+}`,
+      },
+    },
+  },
+  {
     id: 'siswa-delete',
     method: 'DELETE',
     path: '/api/siswa/[id]',
@@ -704,5 +804,5 @@ public class ApiClient {
 
 export const apiCategories = [
   { id: 'auth', name: 'Authentication', endpoints: ['auth-register', 'auth-login', 'auth-logout', 'auth-me'] },
-  { id: 'siswa', name: 'Siswa Management', endpoints: ['siswa-list', 'siswa-detail', 'siswa-create', 'siswa-update', 'siswa-delete'] },
+  { id: 'siswa', name: 'Siswa Management', endpoints: ['siswa-list', 'siswa-detail', 'siswa-create', 'siswa-update', 'siswa-patch', 'siswa-delete'] },
 ];

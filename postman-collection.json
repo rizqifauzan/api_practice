@@ -461,6 +461,51 @@
           "response": []
         },
         {
+          "name": "Patch Siswa",
+          "request": {
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{token}}",
+                  "type": "string"
+                }
+              ]
+            },
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nama\": \"John Doe Patched\"\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/api/siswa/{{userId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["api", "siswa", "{{userId}}"],
+              "variable": [
+                {
+                  "key": "userId",
+                  "value": "{{userId}}",
+                  "description": "Ganti dengan ID siswa yang valid"
+                }
+              ]
+            },
+            "description": "Mengupdate sebagian data siswa (partial update). Hanya field yang dikirim yang akan diupdate. Ganti {{userId}} dengan ID siswa yang valid."
+          },
+          "response": []
+        },
+        {
           "name": "Delete Siswa",
           "request": {
             "auth": {
