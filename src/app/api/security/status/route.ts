@@ -1,33 +1,50 @@
 /**
  * Security Status Endpoint
- * Endpoint untuk cek status security dan konfigurasi
+ * Endpoint untuk cek status rate limiting
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { getClientIP } from '@/lib/security';
-import { isRateLimitingEnabled, RATE_LIMIT_CONFIGS } from '@/lib/rate-limiter';
-import { isPatternDetectionEnabled, getRequestStats } from '@/lib/pattern-detector';
+import { isRateLimitingEnabled, RATE_LIMIT_CONFIGS, checkRateLimit, getIdentifierFromIP } from '@/lib/rate-limiter';
 
 export async function GET(request: NextRequest) {
   try {
-    const ip = getClientIP(request);
-    const requestStats = getRequestStats(ip);
+    // Ekstrak IP address
+    const forwardedFor = request.headers.get('x-forwarded-for');
+    const realIP = request.headers.get('x-real-ip');
+    const cfConnectingIP = request.headers.get('cf-connecting-ip'); // Cloudflare
+
+    let ip = 'unknown';
+    if (forwardedFor) {
+      ip = forwardedFor.split(',')[0].trim();
+    } else if (realIP) {
+      ip = realIP;
+    } else if (cfConnectingIP) {
+      ip = cfConnectingIP;
+    } else {
+      ip = request.ip || 'unknown';
+    }
+
+    // Cek rate limit status untuk IP ini
+    let rateLimitStatus = null;
+    if (isRateLimitingEnabled()) {
+      const identifier = getIdentifierFromIP(ip);
+      rateLimitStatus = await checkRateLimit(identifier);
+    }
 
     const status = {
       timestamp: new Date().toISOString(),
       ip,
       features: {
         rateLimiting: isRateLimitingEnabled(),
-        userAgentBlocking: process.env.USER_AGENT_BLOCK_ENABLED !== 'false',
-        patternDetection: isPatternDetectionEnabled(),
       },
       rateLimitConfig: RATE_LIMIT_CONFIGS,
-      yourRequestStats: {
-        totalRequests: requestStats.totalRequests,
-        uniqueEndpoints: requestStats.uniqueEndpoints,
-        oldestRequest: requestStats.oldestRequest ? new Date(requestStats.oldestRequest).toISOString() : null,
-        newestRequest: requestStats.newestRequest ? new Date(requestStats.newestRequest).toISOString() : null,
-      },
+      yourRateLimitStatus: rateLimitStatus ? {
+        success: rateLimitStatus.success,
+        limit: rateLimitStatus.limit,
+        remaining: rateLimitStatus.remaining,
+        reset: new Date(rateLimitStatus.reset).toISOString(),
+        retryAfter: rateLimitStatus.retryAfter,
+      } : null,
       environment: {
         nodeEnv: process.env.NODE_ENV,
         hasUpstashRedis: !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN),

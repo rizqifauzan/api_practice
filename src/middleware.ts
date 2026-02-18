@@ -1,72 +1,67 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifyToken, extractTokenFromHeader } from '@/lib/auth';
-import {
-  performSecurityChecks,
-  getSecurityHeaders,
-  getClientIP,
-  isIPWhitelisted,
-  isIPBlacklisted,
-  logSecurityEvent
-} from '@/lib/security';
+import { 
+  checkRateLimit, 
+  getIdentifierFromIP, 
+  getRateLimitHeaders, 
+  isRateLimitingEnabled 
+} from '@/lib/rate-limiter';
 
 // Routes yang tidak memerlukan authentication
 const publicRoutes = ['/', '/login', '/register', '/api-docs', '/api/auth/login', '/api/auth/register', '/api/auth/logout'];
 const apiRoutes = ['/api/'];
 
-// Routes yang akan melewati security checks (opsional, untuk testing)
-const bypassSecurityRoutes = ['/api/health', '/api/security/status'];
+// Routes yang akan melewati rate limiting (opsional, untuk testing)
+const bypassRateLimitRoutes = ['/api/security/status'];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const ip = getClientIP(request);
 
-  // Cek IP blacklist/whitelist
-  if (isIPBlacklisted(ip)) {
-    logSecurityEvent('security-check-failed', {
-      ip,
-      userAgent: request.headers.get('user-agent') || undefined,
-      endpoint: pathname,
-      method: request.method,
-      reason: 'IP is blacklisted',
-    });
-    return NextResponse.json(
-      { success: false, error: 'Forbidden', message: 'Your IP has been blocked' },
-      { status: 403, headers: getSecurityHeaders() }
-    );
+  // Ekstrak IP address
+  const forwardedFor = request.headers.get('x-forwarded-for');
+  const realIP = request.headers.get('x-real-ip');
+  const cfConnectingIP = request.headers.get('cf-connecting-ip'); // Cloudflare
+
+  let ip = 'unknown';
+  if (forwardedFor) {
+    ip = forwardedFor.split(',')[0].trim();
+  } else if (realIP) {
+    ip = realIP;
+  } else if (cfConnectingIP) {
+    ip = cfConnectingIP;
+  } else {
+    ip = request.ip || 'unknown';
   }
 
-  // Cek jika route harus melewati security checks
-  const shouldBypassSecurity = bypassSecurityRoutes.some(route => pathname.startsWith(route));
+  // Cek jika route harus melewati rate limiting
+  const shouldBypassRateLimit = bypassRateLimitRoutes.some(route => pathname.startsWith(route));
 
-  // Jalankan security checks (kecuali untuk bypass routes)
-  if (!shouldBypassSecurity) {
-    const securityResult = await performSecurityChecks(request, pathname);
+  // Jalankan rate limiting (kecuali untuk bypass routes)
+  if (!shouldBypassRateLimit && isRateLimitingEnabled()) {
+    const identifier = getIdentifierFromIP(ip);
+    const rateLimitResult = await checkRateLimit(identifier);
 
-    if (!securityResult.allowed) {
-      // Log security event
-      logSecurityEvent(
-        securityResult.statusCode === 403 ? 'user-agent-blocked' : 'rate-limit-exceeded',
-        {
-          ip,
-          userAgent: request.headers.get('user-agent') || undefined,
-          endpoint: pathname,
-          method: request.method,
-          reason: securityResult.reason,
-        }
-      );
+    if (!rateLimitResult.success) {
+      console.warn('[Rate Limit Exceeded]', {
+        ip,
+        endpoint: pathname,
+        method: request.method,
+        limit: rateLimitResult.limit,
+        retryAfter: rateLimitResult.retryAfter,
+      });
 
       return NextResponse.json(
-        {
-          success: false,
-          error: securityResult.error,
-          message: securityResult.reason
+        { 
+          success: false, 
+          error: 'Too Many Requests', 
+          message: `Rate limit exceeded. Try again in ${rateLimitResult.retryAfter} seconds.` 
         },
-        {
-          status: securityResult.statusCode,
+        { 
+          status: 429,
           headers: {
-            ...getSecurityHeaders(),
-            ...(securityResult.headers || {}),
+            ...getRateLimitHeaders(rateLimitResult),
+            'Content-Type': 'application/json',
           }
         }
       );
@@ -79,12 +74,26 @@ export async function middleware(request: NextRequest) {
   // Cek jika route adalah API route
   const isApiRoute = apiRoutes.some(route => pathname.startsWith(route));
 
-  // Jika public route, lanjutkan dengan security headers
+  // Jika public route, lanjutkan dengan rate limit headers
   if (isPublicRoute) {
     const response = NextResponse.next();
-    Object.entries(getSecurityHeaders()).forEach(([key, value]) => {
-      response.headers.set(key, value);
-    });
+    
+    // Tambahkan rate limit headers jika rate limiting diaktifkan
+    if (isRateLimitingEnabled() && !shouldBypassRateLimit) {
+      const identifier = getIdentifierFromIP(ip);
+      const rateLimitResult = await checkRateLimit(identifier);
+      Object.entries(getRateLimitHeaders(rateLimitResult)).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+    }
+
+    // Tambahkan security headers
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    response.headers.set('X-Frame-Options', 'DENY');
+    response.headers.set('X-XSS-Protection', '1; mode=block');
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    response.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+    
     return response;
   }
 
@@ -96,7 +105,7 @@ export async function middleware(request: NextRequest) {
     if (!token) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized - Token tidak ditemukan' },
-        { status: 401, headers: getSecurityHeaders() }
+        { status: 401 }
       );
     }
 
@@ -104,7 +113,7 @@ export async function middleware(request: NextRequest) {
     if (!payload) {
       return NextResponse.json(
         { success: false, error: 'Unauthorized - Token tidak valid' },
-        { status: 401, headers: getSecurityHeaders() }
+        { status: 401 }
       );
     }
 
@@ -119,10 +128,21 @@ export async function middleware(request: NextRequest) {
       },
     });
 
+    // Tambahkan rate limit headers jika rate limiting diaktifkan
+    if (isRateLimitingEnabled() && !shouldBypassRateLimit) {
+      const identifier = getIdentifierFromIP(ip);
+      const rateLimitResult = await checkRateLimit(identifier);
+      Object.entries(getRateLimitHeaders(rateLimitResult)).forEach(([key, value]) => {
+        response.headers.set(key, value);
+      });
+    }
+
     // Tambahkan security headers
-    Object.entries(getSecurityHeaders()).forEach(([key, value]) => {
-      response.headers.set(key, value);
-    });
+    response.headers.set('X-Content-Type-Options', 'nosniff');
+    response.headers.set('X-Frame-Options', 'DENY');
+    response.headers.set('X-XSS-Protection', '1; mode=block');
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    response.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
 
     return response;
   }
@@ -131,27 +151,33 @@ export async function middleware(request: NextRequest) {
   const token = request.cookies.get('token')?.value;
   if (!token) {
     // Redirect ke login jika tidak ada token
-    const response = NextResponse.redirect(new URL('/login', request.url));
-    Object.entries(getSecurityHeaders()).forEach(([key, value]) => {
-      response.headers.set(key, value);
-    });
-    return response;
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
   const payload = await verifyToken(token);
   if (!payload) {
     // Redirect ke login jika token tidak valid
-    const response = NextResponse.redirect(new URL('/login', request.url));
-    Object.entries(getSecurityHeaders()).forEach(([key, value]) => {
-      response.headers.set(key, value);
-    });
-    return response;
+    return NextResponse.redirect(new URL('/login', request.url));
   }
 
   const response = NextResponse.next();
-  Object.entries(getSecurityHeaders()).forEach(([key, value]) => {
-    response.headers.set(key, value);
-  });
+
+  // Tambahkan rate limit headers jika rate limiting diaktifkan
+  if (isRateLimitingEnabled() && !shouldBypassRateLimit) {
+    const identifier = getIdentifierFromIP(ip);
+    const rateLimitResult = await checkRateLimit(identifier);
+    Object.entries(getRateLimitHeaders(rateLimitResult)).forEach(([key, value]) => {
+      response.headers.set(key, value);
+    });
+  }
+
+  // Tambahkan security headers
+  response.headers.set('X-Content-Type-Options', 'nosniff');
+  response.headers.set('X-Frame-Options', 'DENY');
+  response.headers.set('X-XSS-Protection', '1; mode=block');
+  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  response.headers.set('Permissions-Policy', 'geolocation=(), microphone=(), camera=()');
+
   return response;
 }
 
