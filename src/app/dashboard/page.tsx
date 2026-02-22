@@ -523,7 +523,7 @@ export default function DashboardPage() {
       </div>
 
       {/* Delete Confirmation Dialog */}
-      <Dialog id="delete-dialog" open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ open, siswa: null })}>
+      <Dialog open={deleteDialog.open} onOpenChange={(open) => setDeleteDialog({ open, siswa: null })}>
         <DialogContent className="sm:max-w-md">
           <div className="flex flex-col items-center text-center">
             <div className="w-16 h-16 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center mb-4">
