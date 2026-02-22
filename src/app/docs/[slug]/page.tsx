@@ -636,21 +636,21 @@ export default function DocPage({ params }: DocPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <div id="docs-page" className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <nav id="docs-navbar" className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <Link href="/api-docs" className="flex items-center space-x-2">
-              <Button variant="ghost" className="text-gray-600 dark:text-gray-300">
+            <Link id="docs-back-link" href="/api-docs" className="flex items-center space-x-2">
+              <Button id="docs-back-btn" variant="ghost" className="text-gray-600 dark:text-gray-300">
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Kembali ke API Docs
               </Button>
             </Link>
-            <div className="flex items-center space-x-4">
-              <div className="flex items-center space-x-2">
+            <div id="docs-nav-title-wrapper" className="flex items-center space-x-4">
+              <div id="docs-nav-title-content" className="flex items-center space-x-2">
                 <BookOpen className="w-5 h-5 text-purple-600" />
-                <span className="text-sm font-medium text-gray-600 dark:text-gray-300">
+                <span id="docs-nav-title" className="text-sm font-medium text-gray-600 dark:text-gray-300">
                   {doc.title}
                 </span>
               </div>
@@ -660,11 +660,11 @@ export default function DocPage({ params }: DocPageProps) {
       </nav>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <Card className="max-w-4xl mx-auto">
-          <CardContent className="p-8">
-            <div className="prose prose-sm dark:prose-invert max-w-none">
-              <div dangerouslySetInnerHTML={{ __html: formatMarkdown(doc.content) }} />
+      <div id="docs-main" className="container mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <Card id="docs-card" className="max-w-4xl mx-auto">
+          <CardContent id="docs-content" className="p-8">
+            <div id="docs-prose" className="prose prose-sm dark:prose-invert max-w-none">
+              <div id="docs-markdown-content" dangerouslySetInnerHTML={{ __html: formatMarkdown(doc.content) }} />
             </div>
           </CardContent>
         </Card>

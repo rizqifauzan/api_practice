@@ -127,17 +127,17 @@ export default function TambahSiswaPage() {
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Navbar */}
-      <nav className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
+      <nav id="tambah-navbar" className="fixed top-0 left-0 right-0 z-50 bg-white dark:bg-gray-900 border-b border-gray-200 dark:border-gray-800">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
-            <Link href="/" className="flex items-center space-x-2">
+            <Link id="tambah-home-link" href="/" className="flex items-center space-x-2">
               <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">AP</span>
               </div>
               <span className="text-xl font-bold text-gray-900 dark:text-white">API Practice</span>
             </Link>
             <div className="flex items-center space-x-4">
-              <Link href="/dashboard">
+              <Link id="tambah-back-btn" href="/dashboard">
                 <Button variant="ghost" className="text-gray-600 dark:text-gray-300">
                   <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
@@ -151,20 +151,20 @@ export default function TambahSiswaPage() {
       </nav>
 
       {/* Main Content */}
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div id="tambah-main" className="container mx-auto px-4 sm:px-6 lg:px-8 py-20">
         {/* Header */}
-        <div className="max-w-3xl mx-auto mb-8">
+        <div id="tambah-header" className="max-w-3xl mx-auto mb-8">
           <div className="flex items-center gap-3 mb-4">
-            <div className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
+            <div id="tambah-header-icon" className="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-xl flex items-center justify-center">
               <svg className="w-6 h-6 text-blue-600 dark:text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z" />
               </svg>
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
+              <h1 id="tambah-title" className="text-3xl font-bold text-gray-900 dark:text-white">
                 Tambah Siswa
               </h1>
-              <p className="text-gray-600 dark:text-gray-300">
+              <p id="tambah-subtitle" className="text-gray-600 dark:text-gray-300">
                 Tambahkan data siswa baru ke dalam sistem
               </p>
             </div>
@@ -172,17 +172,17 @@ export default function TambahSiswaPage() {
         </div>
 
         {/* Form Card */}
-        <Card className="max-w-3xl mx-auto border-2 shadow-lg">
+        <Card id="tambah-form-card" className="max-w-3xl mx-auto border-2 shadow-lg">
           <CardHeader>
-            <CardTitle>Form Data Siswa</CardTitle>
-            <CardDescription>
+            <CardTitle id="tambah-form-title">Form Data Siswa</CardTitle>
+            <CardDescription id="tambah-form-description">
               Isi semua field yang ditandai dengan bintang (*) wajib diisi
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form id="tambah-form" onSubmit={handleSubmit} className="space-y-6">
               {errors.general && (
-                <div className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 flex items-center">
+                <div id="tambah-general-error" className="p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg text-red-600 dark:text-red-400 flex items-center">
                   <svg className="w-5 h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
                     <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
                   </svg>
