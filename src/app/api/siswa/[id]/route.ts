@@ -127,6 +127,40 @@ export async function PUT(
       }
     }
 
+    // Cek apakah email sudah terdaftar (jika email diupdate)
+    if (validation.data!.email && validation.data!.email !== '') {
+      const { data: duplicateEmail } = await supabaseAdmin
+        .from('siswa')
+        .select('id')
+        .eq('email', validation.data!.email)
+        .neq('id', id)
+        .single();
+
+      if (duplicateEmail) {
+        return NextResponse.json<ApiResponse<null>>(
+          { success: false, error: 'Email sudah terdaftar' },
+          { status: 409 }
+        );
+      }
+    }
+
+    // Cek apakah telepon sudah terdaftar (jika telepon diupdate)
+    if (validation.data!.telepon && validation.data!.telepon !== '') {
+      const { data: duplicateTelepon } = await supabaseAdmin
+        .from('siswa')
+        .select('id')
+        .eq('telepon', validation.data!.telepon)
+        .neq('id', id)
+        .single();
+
+      if (duplicateTelepon) {
+        return NextResponse.json<ApiResponse<null>>(
+          { success: false, error: 'Nomor telepon sudah terdaftar' },
+          { status: 409 }
+        );
+      }
+    }
+
     // Update siswa
     const { email, telepon, alamat, ...rest } = validation.data!;
 
@@ -229,6 +263,40 @@ export async function PATCH(
       if (duplicateSiswa) {
         return NextResponse.json<ApiResponse<null>>(
           { success: false, error: 'NIS sudah terdaftar' },
+          { status: 409 }
+        );
+      }
+    }
+
+    // Cek apakah email sudah terdaftar (jika email diupdate)
+    if (validation.data!.email && validation.data!.email !== '') {
+      const { data: duplicateEmail } = await supabaseAdmin
+        .from('siswa')
+        .select('id')
+        .eq('email', validation.data!.email)
+        .neq('id', id)
+        .single();
+
+      if (duplicateEmail) {
+        return NextResponse.json<ApiResponse<null>>(
+          { success: false, error: 'Email sudah terdaftar' },
+          { status: 409 }
+        );
+      }
+    }
+
+    // Cek apakah telepon sudah terdaftar (jika telepon diupdate)
+    if (validation.data!.telepon && validation.data!.telepon !== '') {
+      const { data: duplicateTelepon } = await supabaseAdmin
+        .from('siswa')
+        .select('id')
+        .eq('telepon', validation.data!.telepon)
+        .neq('id', id)
+        .single();
+
+      if (duplicateTelepon) {
+        return NextResponse.json<ApiResponse<null>>(
+          { success: false, error: 'Nomor telepon sudah terdaftar' },
           { status: 409 }
         );
       }

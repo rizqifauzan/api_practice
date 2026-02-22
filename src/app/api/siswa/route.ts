@@ -151,6 +151,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Cek apakah email sudah terdaftar (jika email diisi)
+    if (validation.data!.email && validation.data!.email !== '') {
+      const { data: existingEmail } = await supabaseAdmin
+        .from('siswa')
+        .select('id')
+        .eq('email', validation.data!.email)
+        .single();
+
+      if (existingEmail) {
+        return NextResponse.json<ApiResponse<null>>(
+          { success: false, error: 'Email sudah terdaftar' },
+          { status: 409 }
+        );
+      }
+    }
+
+    // Cek apakah telepon sudah terdaftar (jika telepon diisi)
+    if (validation.data!.telepon && validation.data!.telepon !== '') {
+      const { data: existingTelepon } = await supabaseAdmin
+        .from('siswa')
+        .select('id')
+        .eq('telepon', validation.data!.telepon)
+        .single();
+
+      if (existingTelepon) {
+        return NextResponse.json<ApiResponse<null>>(
+          { success: false, error: 'Nomor telepon sudah terdaftar' },
+          { status: 409 }
+        );
+      }
+    }
+
     // Buat siswa baru
     const { data: newSiswa, error } = await supabaseAdmin
       .from('siswa')
