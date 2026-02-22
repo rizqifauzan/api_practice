@@ -3,8 +3,9 @@
  * Membatasi jumlah request per IP dalam periode waktu tertentu
  */
 
-import { Ratelimit } from '@upstash/ratelimit';
-import { Redis } from '@upstash/redis';
+// Dynamic imports to avoid Edge Runtime issues
+let Ratelimit: any = null;
+let Redis: any = null;
 
 // Rate limit configuration
 interface RateLimitConfig {
@@ -83,13 +84,13 @@ class InMemoryRateLimiter {
 }
 
 // Rate limiter instance
-let rateLimiter: Ratelimit | InMemoryRateLimiter | null = null;
+let rateLimiter: any | InMemoryRateLimiter | null = null;
 let useInMemory = false;
 
 /**
  * Inisialisasi rate limiter
  */
-export function initRateLimiter() {
+export async function initRateLimiter() {
   // Cek environment variables untuk Upstash Redis
   const redisUrl = process.env.UPSTASH_REDIS_REST_URL;
   const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN;
@@ -97,6 +98,14 @@ export function initRateLimiter() {
   if (redisUrl && redisToken && !useInMemory) {
     // Gunakan Upstash Redis untuk production
     try {
+      // Dynamic import to avoid Edge Runtime issues
+      if (!Ratelimit || !Redis) {
+        const upstashModule = await import('@upstash/ratelimit');
+        const redisModule = await import('@upstash/redis');
+        Ratelimit = upstashModule.Ratelimit;
+        Redis = redisModule.Redis;
+      }
+
       const redis = new Redis({
         url: redisUrl,
         token: redisToken,
@@ -141,7 +150,7 @@ export async function checkRateLimit(
 ): Promise<RateLimitResult> {
   // Inisialisasi jika belum
   if (!rateLimiter) {
-    initRateLimiter();
+    await initRateLimiter();
   }
 
   try {
@@ -154,7 +163,7 @@ export async function checkRateLimit(
         reset: result.reset,
         retryAfter: result.success ? undefined : Math.ceil((result.reset - Date.now()) / 1000),
       };
-    } else if (rateLimiter instanceof Ratelimit) {
+    } else if (rateLimiter && !useInMemory) {
       // Gunakan Upstash Redis
       const result = await rateLimiter.limit(identifier);
       return {

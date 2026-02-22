@@ -1,4 +1,3 @@
-import bcrypt from 'bcryptjs';
 import { SignJWT, jwtVerify } from 'jose';
 import { JWTPayload } from './types';
 
@@ -8,8 +7,10 @@ const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
 // Convert JWT_SECRET to Uint8Array for jose
 const secretKey = new TextEncoder().encode(JWT_SECRET);
 
-// Password hashing
+// Password hashing - dynamic import to avoid Edge Runtime issues
 export async function hashPassword(password: string): Promise<string> {
+  // Use dynamic import to avoid Edge Runtime issues
+  const bcrypt = await import('bcryptjs');
   return bcrypt.hash(password, 10);
 }
 
@@ -17,6 +18,8 @@ export async function verifyPassword(
   password: string,
   hashedPassword: string
 ): Promise<boolean> {
+  // Use dynamic import to avoid Edge Runtime issues
+  const bcrypt = await import('bcryptjs');
   return bcrypt.compare(password, hashedPassword);
 }
 

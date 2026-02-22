@@ -1,11 +1,12 @@
 import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 import { verifyToken, extractTokenFromHeader } from '@/lib/auth';
-import { 
-  checkRateLimit, 
-  getIdentifierFromIP, 
-  getRateLimitHeaders, 
-  isRateLimitingEnabled 
+import {
+  checkRateLimit,
+  getIdentifierFromIP,
+  getRateLimitHeaders,
+  isRateLimitingEnabled,
+  initRateLimiter
 } from '@/lib/rate-limiter';
 
 // Routes yang tidak memerlukan authentication
@@ -17,6 +18,9 @@ const bypassRateLimitRoutes = ['/api/security/status'];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+  
+  // Initialize rate limiter if needed
+  await initRateLimiter();
 
   // Ekstrak IP address
   const forwardedFor = request.headers.get('x-forwarded-for');
