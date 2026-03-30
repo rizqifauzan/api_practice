@@ -56,14 +56,14 @@ export const apiEndpoints: ApiEndpoint[] = [
     },
     examples: {
       request: {
-        curl: `curl -X POST https://your-domain.com/api/auth/register \\
+        curl: `curl -X POST https://api.rizqifauzan.com/api/auth/register \\
   -H "Content-Type: application/json" \\
   -d '{
     "nama": "John Doe",
     "email": "john@example.com",
     "password": "Password123"
   }'`,
-        javascript: `fetch('https://your-domain.com/api/auth/register', {
+        javascript: `fetch('https://api.rizqifauzan.com/api/auth/register', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ import org.json.JSONObject;
 
 public class ApiClient {
     public static void main(String[] args) {
-        String baseUrl = "https://your-domain.com";
+        String baseUrl = "https://api.rizqifauzan.com";
         
         JSONObject requestBody = new JSONObject();
         requestBody.put("nama", "John Doe");
@@ -138,13 +138,13 @@ public class ApiClient {
     },
     examples: {
       request: {
-        curl: `curl -X POST https://your-domain.com/api/auth/login \\
+        curl: `curl -X POST https://api.rizqifauzan.com/api/auth/login \\
   -H "Content-Type: application/json" \\
   -d '{
     "email": "john@example.com",
     "password": "Password123"
   }'`,
-        javascript: `fetch('https://your-domain.com/api/auth/login', {
+        javascript: `fetch('https://api.rizqifauzan.com/api/auth/login', {
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',
@@ -160,7 +160,7 @@ import org.json.JSONObject;
 
 public class ApiClient {
     public static void main(String[] args) {
-        String baseUrl = "https://your-domain.com";
+        String baseUrl = "https://api.rizqifauzan.com";
         
         JSONObject requestBody = new JSONObject();
         requestBody.put("email", "john@example.com");
@@ -221,9 +221,9 @@ public class ApiClient {
     },
     examples: {
       request: {
-        curl: `curl -X POST https://your-domain.com/api/auth/logout \\
+        curl: `curl -X POST https://api.rizqifauzan.com/api/auth/logout \\
   -H "Authorization: Bearer YOUR_TOKEN_HERE"`,
-        javascript: `fetch('https://your-domain.com/api/auth/logout', {
+        javascript: `fetch('https://api.rizqifauzan.com/api/auth/logout', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer YOUR_TOKEN_HERE'
@@ -234,7 +234,7 @@ import io.restassured.response.Response;
 
 public class ApiClient {
     public static void main(String[] args) {
-        String baseUrl = "https://your-domain.com";
+        String baseUrl = "https://api.rizqifauzan.com";
         String token = "YOUR_TOKEN_HERE";
         
         Response response = RestAssured.given()
@@ -279,9 +279,9 @@ public class ApiClient {
     },
     examples: {
       request: {
-        curl: `curl -X GET https://your-domain.com/api/auth/me \\
+        curl: `curl -X GET https://api.rizqifauzan.com/api/auth/me \\
   -H "Authorization: Bearer YOUR_TOKEN_HERE"`,
-        javascript: `fetch('https://your-domain.com/api/auth/me', {
+        javascript: `fetch('https://api.rizqifauzan.com/api/auth/me', {
   method: 'GET',
   headers: {
     'Authorization': 'Bearer YOUR_TOKEN_HERE'
@@ -292,7 +292,7 @@ import io.restassured.response.Response;
 
 public class ApiClient {
     public static void main(String[] args) {
-        String baseUrl = "https://your-domain.com";
+        String baseUrl = "https://api.rizqifauzan.com";
         String token = "YOUR_TOKEN_HERE";
         
         Response response = RestAssured.given()
@@ -353,9 +353,9 @@ public class ApiClient {
     },
     examples: {
       request: {
-        curl: `curl -X GET "https://your-domain.com/api/siswa?page=1&limit=10&search=John&kelas=X-IPA-1&sortBy=nama&sortOrder=asc" \\
+        curl: `curl -X GET "https://api.rizqifauzan.com/api/siswa?page=1&limit=10&search=John&kelas=X-IPA-1&sortBy=nama&sortOrder=asc" \\
   -H "Authorization: Bearer YOUR_TOKEN_HERE"`,
-        javascript: `fetch('https://your-domain.com/api/siswa?page=1&limit=10&search=John&kelas=X-IPA-1&sortBy=nama&sortOrder=asc', {
+        javascript: `fetch('https://api.rizqifauzan.com/api/siswa?page=1&limit=10&search=John&kelas=X-IPA-1&sortBy=nama&sortOrder=asc', {
   method: 'GET',
   headers: {
     'Authorization': 'Bearer YOUR_TOKEN_HERE'
@@ -417,9 +417,9 @@ public class ApiClient {
     },
     examples: {
       request: {
-        curl: `curl -X GET https://your-domain.com/api/siswa/uuid-here \\
+        curl: `curl -X GET https://api.rizqifauzan.com/api/siswa/uuid-here \\
   -H "Authorization: Bearer YOUR_TOKEN_HERE"`,
-        javascript: `fetch('https://your-domain.com/api/siswa/uuid-here', {
+        javascript: `fetch('https://api.rizqifauzan.com/api/siswa/uuid-here', {
   method: 'GET',
   headers: {
     'Authorization': 'Bearer YOUR_TOKEN_HERE'
@@ -480,7 +480,7 @@ public class ApiClient {
     },
     examples: {
       request: {
-        curl: `curl -X POST https://your-domain.com/api/siswa \\
+        curl: `curl -X POST https://api.rizqifauzan.com/api/siswa \\
   -H "Authorization: Bearer YOUR_TOKEN_HERE" \\
   -H "Content-Type: application/json" \\
   -d '{
@@ -492,7 +492,7 @@ public class ApiClient {
     "telepon": "+628123456789",
     "alamat": "Jl. Contoh No. 2"
   }'`,
-        javascript: `fetch('https://your-domain.com/api/siswa', {
+        javascript: `fetch('https://api.rizqifauzan.com/api/siswa', {
   method: 'POST',
   headers: {
     'Authorization': 'Bearer YOUR_TOKEN_HERE',
@@ -567,14 +567,14 @@ public class ApiClient {
     },
     examples: {
       request: {
-        curl: `curl -X PUT https://your-domain.com/api/siswa/uuid-here \\
+        curl: `curl -X PUT https://api.rizqifauzan.com/api/siswa/uuid-here \\
   -H "Authorization: Bearer YOUR_TOKEN_HERE" \\
   -H "Content-Type: application/json" \\
   -d '{
     "nama": "Jane Smith",
     "email": "jane.smith@example.com"
   }'`,
-        javascript: `fetch('https://your-domain.com/api/siswa/uuid-here', {
+        javascript: `fetch('https://api.rizqifauzan.com/api/siswa/uuid-here', {
   method: 'PUT',
   headers: {
     'Authorization': 'Bearer YOUR_TOKEN_HERE',
@@ -591,7 +591,7 @@ import org.json.JSONObject;
 
 public class ApiClient {
     public static void main(String[] args) {
-        String baseUrl = "https://your-domain.com";
+        String baseUrl = "https://api.rizqifauzan.com";
         String token = "YOUR_TOKEN_HERE";
         String siswaId = "uuid-here";
         
@@ -670,13 +670,13 @@ public class ApiClient {
     },
     examples: {
       request: {
-        curl: `curl -X PATCH https://your-domain.com/api/siswa/uuid-here \\
+        curl: `curl -X PATCH https://api.rizqifauzan.com/api/siswa/uuid-here \\
   -H "Authorization: Bearer YOUR_TOKEN_HERE" \\
   -H "Content-Type: application/json" \\
   -d '{
     "nama": "Jane Patched"
   }'`,
-        javascript: `fetch('https://your-domain.com/api/siswa/uuid-here', {
+        javascript: `fetch('https://api.rizqifauzan.com/api/siswa/uuid-here', {
   method: 'PATCH',
   headers: {
     'Authorization': 'Bearer YOUR_TOKEN_HERE',
@@ -692,7 +692,7 @@ import org.json.JSONObject;
 
 public class ApiClient {
     public static void main(String[] args) {
-        String baseUrl = "https://your-domain.com";
+        String baseUrl = "https://api.rizqifauzan.com";
         String token = "YOUR_TOKEN_HERE";
         String siswaId = "uuid-here";
         
@@ -760,9 +760,9 @@ public class ApiClient {
     },
     examples: {
       request: {
-        curl: `curl -X DELETE https://your-domain.com/api/siswa/uuid-here \\
+        curl: `curl -X DELETE https://api.rizqifauzan.com/api/siswa/uuid-here \\
   -H "Authorization: Bearer YOUR_TOKEN_HERE"`,
-        javascript: `fetch('https://your-domain.com/api/siswa/uuid-here', {
+        javascript: `fetch('https://api.rizqifauzan.com/api/siswa/uuid-here', {
   method: 'DELETE',
   headers: {
     'Authorization': 'Bearer YOUR_TOKEN_HERE'
@@ -773,7 +773,7 @@ import io.restassured.response.Response;
 
 public class ApiClient {
     public static void main(String[] args) {
-        String baseUrl = "https://your-domain.com";
+        String baseUrl = "https://api.rizqifauzan.com";
         String token = "YOUR_TOKEN_HERE";
         String siswaId = "uuid-here";
         
